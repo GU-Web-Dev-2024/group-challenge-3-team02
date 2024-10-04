@@ -98,12 +98,21 @@
     <script>
         // Set up local variables
         // Hint: Declare variables for score, currentHole, gameTimer, timeLeft, moleVisible, etc.
+        let score;
+        let currentHold;
+        let gameTimer;
+        let timeLeft;
+        let moleVisible;
 
         // Get references to DOM elements
         // Example:
         // const startButton = document.getElementById('startButton');
 
-        // Add event listener to the start button        
+        // Add event listener to the start button 
+        const startButton = document.getElementById('startButton');
+        startButton.addEventListener('click', function() {
+            startGame();
+        });    
 
         // TODO: start game logic
         function startGame() {
@@ -112,7 +121,11 @@
             // 2. Update JS variables and HTML elements to reflect this.            
             // 3. Start the mole movement interval using setInterval().
             //    e.g., - gameTimer = setInterval(randomHole, 1000); // Move mole every second
-            // 4. Start the countdown timer using setInterval().            
+            // 4. Start the countdown timer using setInterval().  
+            score = 0;
+            gameTimer = setInterval(randomHole, 1000);
+            moleVisible = Math.floor((Math.random()* 6) + 1);
+            document.getElementById('hole' + moleVisible)
         }
 
         // TODO: mole movement logic
@@ -122,7 +135,8 @@
             // 2. Generate a random index to select a new hole. 
             //      hint: you need to then find all "mole holes" and randomly choose one from the list.           
             // 3. Show the mole in the new hole.            
-            // 4. Add a click event listener to the mole to handle "whacking".            
+            // 4. Add a click event listener to the mole to handle "whacking".     
+
         }
 
         // TODO: whack mole game logic
