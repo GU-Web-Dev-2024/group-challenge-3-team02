@@ -72,7 +72,7 @@
     <div id="score-board">Score: 0</div>
     <div id="timer">Time Left: 30s</div>
     <!-- Start Game button -->
-    <button id="startButton">Start Game</button>
+    <button id="start-button">Start Game</button>
     <!-- Game grid containing holes and moles -->
     <div class="grid">
         <div class="hole" id="hole1">
@@ -99,17 +99,18 @@
         // Set up local variables
         // Hint: Declare variables for score, currentHole, gameTimer, timeLeft, moleVisible, etc.
         let score;
-        let currentHold;
-        let gameTimer;
-        let timeLeft;
+        let currentHole;
+        let moleInterval;
+        let countdownInterval;
+        let timeLeft = 30; //30 seconds
         let moleVisible;
 
         // Get references to DOM elements
-        // Example:
-        // const startButton = document.getElementById('startButton');
+        const startButton = document.getElementById('start-button');
+        const scoreBoard = document.getElementById('score-board');
+        const timerDisplay = document.getElementById('timer');
 
         // Add event listener to the start button 
-        const startButton = document.getElementById('startButton');
         startButton.addEventListener('click', function() {
             startGame();
         });    
@@ -121,11 +122,25 @@
             // 2. Update JS variables and HTML elements to reflect this.            
             // 3. Start the mole movement interval using setInterval().
             //    e.g., - gameTimer = setInterval(randomHole, 1000); // Move mole every second
-            // 4. Start the countdown timer using setInterval().  
+            // 4. Start the countdown timer using setInterval().
             score = 0;
-            gameTimer = setInterval(randomHole, 1000);
-            moleVisible = Math.floor((Math.random()* 6) + 1);
-            document.getElementById('hole' + moleVisible)
+            timeLeft = 30;
+            moleVisible = false;
+            scoreBoard.innerText = `Score: ${score}`;
+            timerDisplay.innerText = `Time Left: ${timeLeft}s`;
+            startButton.disabled = true;
+
+            moleInterval = setInterval(randomHole, 1000);
+            countdownInterval = setInterval(updateTimer, 1000);
+        }
+
+        // function to help with time updating
+        function updateTimer() {
+            timeLeft--;
+            timerDisplay.innerText = `Time Left: ${timeLeft}s`;
+            if (timeLeft <= 0) {
+                endGame();
+            }
         }
 
         // TODO: mole movement logic
@@ -136,7 +151,19 @@
             //      hint: you need to then find all "mole holes" and randomly choose one from the list.           
             // 3. Show the mole in the new hole.            
             // 4. Add a click event listener to the mole to handle "whacking".     
+            if (currentHole) {
+                currentHole.querySelector('.mole').style.display = 'none'; // Hide the mole in the previous hole
+            }
 
+            const holes = document.querySelectorAll('.hole');
+            const randomIndex = Math.floor((Math.random()* 6) + 1);
+            currentHole = holes[randomIndex];
+
+            const mole = currentHole.querySelector('.mole');
+            mole.style.display = 'block'; // Show the mole
+            moleVisible = true;
+
+            mole.onclick = whack(); // Add click event listener to the mole
         }
 
         // TODO: whack mole game logic
@@ -145,7 +172,13 @@
             // 0. if the mole is visible...
             // 1. Increase the score.           
             // 2. Update the score display in the HTML.           
-            // 3. Hide the mole after it's whacked.            
+            // 3. Hide the mole after it's whacked.  
+            if (moleVisible) {
+                score++;
+                scoreBoard.innerText = `Score: ${score}`;
+                this.style.display = 'none'; // Hide the mole after it's whacked
+                moleVisible = false;
+            }          
         }
 
         // TODO: end game logic function
@@ -155,6 +188,13 @@
             // 2. Hide any remaining mole on the grid.            /
             // 3. Display an alert or message showing the final score.            
             // 4. Reset the game to allow playing again.
+            clearInterval(moleInterval);
+            clearInterval(countdownInterval);
+            if (currentHole) {
+                currentHole.querySelector('.mole').style.display = 'none'; // Hide any remaining mole
+            }
+            alert(`Game Over! Your final score is: ${score}`);
+            startButton.disabled = false; // Re-enable the start button for a new game
         }
 
         // Helpful Tips:
