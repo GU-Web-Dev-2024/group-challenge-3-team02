@@ -163,7 +163,10 @@
             mole.style.display = 'block'; // Show the mole
             moleVisible = true;
 
-            mole.onclick = whack(); // Add click event listener to the mole
+            // Add click event listener to the mole
+            mole.addEventListener('click', function() {
+                whack();
+            });
         }
 
         // TODO: whack mole game logic
